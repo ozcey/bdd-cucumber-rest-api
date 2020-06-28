@@ -7,12 +7,12 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum EndPoints {
 
-    UserFindAll("/user/findAll"),
-    UserFindById("/user/findById"),
-    UserAdd("/user/insert"),
-    UserUpdate("/user/update"),
-    UserDelete("/user/delete"),
-    Login("/user/login");
+    UserFindAll("/users/findAll"),
+    UserFindById("/users/findById/{userId}"),
+    UserAdd("/users/insert"),
+    UserUpdate("/users/update"),
+    UserDelete("/users/delete"),
+    Login("/users/login");
 
     private final String endPoint;
 }
