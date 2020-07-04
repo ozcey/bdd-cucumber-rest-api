@@ -11,7 +11,7 @@ public enum EndPoints {
     UserFindById("/users/findById/{userId}"),
     UserAdd("/users/insert"),
     UserUpdate("/users/update"),
-    UserDelete("/users/delete"),
+    UserDelete("/users/delete/{userId}"),
     Login("/users/login");
 
     private final String endPoint;
