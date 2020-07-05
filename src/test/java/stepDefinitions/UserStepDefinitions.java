@@ -2,10 +2,6 @@ package stepDefinitions;
 
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.*;
-import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
-import utils.Constants;
-import utils.Util;
 import utils.Utilities;
 
 public class UserStepDefinitions {
@@ -14,7 +10,7 @@ public class UserStepDefinitions {
 
 	@Given("^he\\/she adds user payload to request$")
 	public void he_she_adds_user_payload(DataTable userPayload) {
-		utilities.getRequestSpecWithPayload(userPayload);
+		utilities.getRequestSpec(userPayload, "POST");
 	}
 
 	@When("^he/she calls \"([^\"]*)\" with \"([^\"]*)\" request$")
@@ -39,12 +35,12 @@ public class UserStepDefinitions {
 
 	@Given("^he/she adds user id to request$")
 	public void heshe_adds_user_id_to_request() {
-		utilities.getRequestSpecWithId();
+		utilities.getRequestSpec(null, "GET");
 	}
 
 	@Given("^he/she gets authorization using email and password$")
 	public void he_she_gets_authorization_using_email_and_password() {
-		utilities.getRequestSpecWithEmailAndPass();
+		utilities.getRequestSpec(null, "LOGIN");
 	}
 
 	@And("^he/she extracts \"([^\"]*)\" from response$")
@@ -58,12 +54,12 @@ public class UserStepDefinitions {
 	}
 
 	@Given("^he/she adds user payload with id to request$")
-	public void he_she_adds_user_payload_with_id_to_request(DataTable dataTable) {
-		utilities.getRequestSpecWithIdAndPayload(dataTable);
+	public void he_she_adds_user_payload_with_id_to_request(DataTable userPayload) {
+		utilities.getRequestSpec(userPayload, "PUT");
 	}
 
 	@Given("^he/she deletes an user using id$")
 	public void he_she_deletes_an_user_using_id() {
-		utilities.getRequestSpecWithAuth();
+		utilities.getRequestSpec(null, "DELETE");
 	}
 }

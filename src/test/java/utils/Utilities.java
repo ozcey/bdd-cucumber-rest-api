@@ -2,7 +2,6 @@ package utils;
 
 import io.cucumber.datatable.DataTable;
 import io.restassured.RestAssured;
-import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
@@ -24,55 +23,41 @@ public class Utilities {
 	public static Map<String, Object> properties = new HashMap<>();
 
 	public RequestSpecification setRequestSpecification() {
-		requestSpecification = new RequestSpecBuilder().setBaseUri(Constants.BASE_URL)
-				.setContentType(ContentType.JSON).build();
+		requestSpecification = RestAssured.given().baseUri(Constants.BASE_URL).contentType(ContentType.JSON);
 		return requestSpecification;
 	}
 
-	public RequestSpecification getRequestSpec() {
-		return RestAssured.given().spec(setRequestSpecification());
+	@SuppressWarnings("unchecked")
+	private Map<String, Object> getProperties() {
+		return ((Map<String, Object>) properties.get("properties"));
 	}
 
-	public void getRequestSpecWithPayload(DataTable userPayload) {
-		requestSpecification = getRequestSpec().body(getUserPayload(userPayload));
+	public void getRequestSpec(DataTable dataTable, String operation) {
+		Map<String, Object> props = getProperties();
+
+		switch (operation) {
+		case "POST":
+			requestSpecification = setRequestSpecification().body(getUserPayload(dataTable));
+			break;
+		case "GET":
+			requestSpecification = setRequestSpecification().pathParam("id", (Integer) props.get("id"));
+			break;
+		case "LOGIN":
+			requestSpecification = setRequestSpecification().header("email", props.get("email").toString())
+					.header("password", props.get("password").toString());
+			break;
+		case "PUT":
+			requestSpecification = setRequestSpecification().header("Authorization", properties.get("jwt").toString())
+					.body(getUpdateUserPayload(dataTable));
+			break;
+		case "DELETE":
+			requestSpecification = setRequestSpecification().header("Authorization", properties.get("jwt").toString())
+					.pathParam("id", (Integer) props.get("id"));
+			break;
+
+		}
+
 		scenarioParams.put("requestSpecification", requestSpecification);
-	}
-
-	public void getRequestSpecWithId() {
-		Map<String, Object> properties = (Map<String, Object>) Utilities.properties.get("properties");
-		Integer id = (Integer) properties.get("id");
-		requestSpecification = getRequestSpec().pathParam("id", id);
-		if (scenarioParams.get("requestSpecification") != null) {
-			scenarioParams.put("requestSpecification", requestSpecification);
-		}
-	}
-
-	public void getRequestSpecWithEmailAndPass() {
-		Map<String, Object> properties = (Map<String, Object>) Utilities.properties.get("properties");
-		String email = properties.get("email").toString();
-		String password = properties.get("password").toString();
-		requestSpecification = getRequestSpec().header("email", email).header("password", password);
-		if (scenarioParams.get("requestSpecification") != null) {
-			scenarioParams.put("requestSpecification", requestSpecification);
-		}
-	}
-
-	public void getRequestSpecWithAuth() {
-		Map<String, Object> props = (Map<String, Object>) Utilities.properties.get("properties");
-		Integer id = (Integer) props.get("id");
-		String jwt = properties.get("jwt").toString();
-		requestSpecification = getRequestSpec().header("Authorization", jwt).pathParam("id", id);
-		if (scenarioParams.get("requestSpecification") != null) {
-			scenarioParams.put("requestSpecification", requestSpecification);
-		}
-	}
-
-	public void getRequestSpecWithIdAndPayload(DataTable userPayload) {
-		String jwt = properties.get("jwt").toString();
-		requestSpecification = getRequestSpec().header("Authorization", jwt).body(getUpdateUserPayload(userPayload));
-		if (scenarioParams.get("requestSpecification") != null) {
-			scenarioParams.put("requestSpecification", requestSpecification);
-		}
 	}
 
 	public void getResponse(String endPoint, String method) {
@@ -119,11 +104,11 @@ public class Utilities {
 
 	public void validateProperties(DataTable data) {
 		Response response = (Response) scenarioParams.get("response");
-		List<Map<String, String>> userData = data.asMaps(String.class, String.class);
-		for (Map<String, String> userProp : userData) {
-			String property = userProp.get("Property");
+		List<Map<String, String>> propertyList = data.asMaps(String.class, String.class);
+		for (Map<String, String> prop : propertyList) {
+			String property = prop.get("Property");
 			String val = getStringValFromResponse(response, property);
-			assertEquals(val, userProp.get("Value"));
+			assertEquals(val, prop.get("Value"));
 		}
 	}
 
@@ -152,7 +137,7 @@ public class Utilities {
 	}
 
 	private String getUpdateUserPayload(DataTable data) {
-		Map<String, Object> props = (Map<String, Object>) Utilities.properties.get("properties");
+		Map<String, Object> props = getProperties();
 		Integer id = (Integer) props.get("id");
 		Map<String, String> userData = data.asMap(String.class, String.class);
 		return Payloads.updateUserPayload(id, userData.get("firstName"), userData.get("lastName"),
