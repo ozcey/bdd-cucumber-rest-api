@@ -8,10 +8,15 @@ import lombok.Getter;
 public enum EndPoints {
 
     UserFindAll("/users/findAll"),
-    UserFindById("/users/findById/{userId}"),
+    UserFindById("/users/findById/{id}"),
     UserAdd("/users/insert"),
     UserUpdate("/users/update"),
-    UserDelete("/users/delete/{userId}"),
+    UserDelete("/users/delete/{id}"),
+    CustomerFindAll("/customers/findAll"),
+    CustomerFindById("/customers/id/{id}"),
+    CustomerAdd("/customers/insert"),
+    CustomerUpdate("/customers/update"),
+    CustomerDelete("/customers/delete/{id}"),
     Login("/users/login");
 
     private final String endPoint;

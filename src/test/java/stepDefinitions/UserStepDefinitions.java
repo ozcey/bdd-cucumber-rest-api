@@ -6,71 +6,64 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import utils.Constants;
 import utils.Util;
+import utils.Utilities;
 
 public class UserStepDefinitions {
 
-	RequestSpecification requestSpecification;
-	Response response;
-	Util util = new Util();
+	Utilities utilities = new Utilities();
 
 	@Given("^he\\/she adds user payload to request$")
 	public void he_she_adds_user_payload(DataTable userPayload) {
-		requestSpecification = util.getRequestSpec().body(util.getUserPayload(userPayload));
+		utilities.getRequestSpecWithPayload(userPayload);
 	}
 
 	@When("^he/she calls \"([^\"]*)\" with \"([^\"]*)\" request$")
 	public void heshe_calls_something_with_something_request(String endPoint, String method) {
-		response = util.getResponse(requestSpecification, endPoint, method);
+		utilities.getResponse(endPoint, method);
 	}
 
 	@Then("^he/she gets good response \"([^\"]*)\"$")
 	public void heshe_gets_good_response_something(String status) {
-		util.validateStatusCode(response, status);
+		utilities.validateStatus(status);
 	}
 
 	@Then("^he/she extracts properties from response$")
-	public void he_she_extracts_properties_from_response() {
-		Constants.USER_ID = util.getLongValFromResponse(response, "id");
-		Constants.EMAIL = util.getStringValFromResponse(response, "email");
-		Constants.PASSWORD = util.getStringValFromResponse(response, "password");
+	public void he_she_extracts_properties_from_response(DataTable data) {
+		utilities.extractProperties(data);
 	}
 
 	@Then("^he\\/she asserts that response has following values$")
 	public void he_she_asserts_that_response_has_following_values(DataTable data) {
-		util.validateProperties(response, data);
+		utilities.validateProperties(data);
 	}
 
 	@Given("^he/she adds user id to request$")
 	public void heshe_adds_user_id_to_request() {
-		requestSpecification = util.getRequestSpec().pathParam("userId", Constants.USER_ID);
+		utilities.getRequestSpecWithId();
 	}
 
 	@Given("^he/she gets authorization using email and password$")
 	public void he_she_gets_authorization_using_email_and_password() {
-		requestSpecification = util.getRequestSpec().header("email", Constants.EMAIL).header("password",
-				Constants.PASSWORD);
+		utilities.getRequestSpecWithEmailAndPass();
+	}
+
+	@And("^he/she extracts \"([^\"]*)\" from response$")
+	public void he_she_extracts_from_response(String jwt) {
+		utilities.extractProperties(jwt);
 	}
 
 	@Then("^he/she asserts that properties not null$")
-	public void he_she_asserts_that_properties_not_null(io.cucumber.datatable.DataTable dataTable) {
-		util.validateNotNull(response, dataTable);
+	public void he_she_asserts_that_properties_not_null(DataTable dataTable) {
+		utilities.validatePropertyNotNull(dataTable);
 	}
 
-	@Then("he\\/she extracts {string} from response")
-	public void he_she_extracts_from_response(String jwt) {
-		Constants.JWT = util.getStringValFromResponse(response, jwt);
-	}
-
-	@Given("he\\/she adds user payload with id to request")
+	@Given("^he/she adds user payload with id to request$")
 	public void he_she_adds_user_payload_with_id_to_request(DataTable dataTable) {
-		requestSpecification = util.getRequestSpec().header("Authorization", Constants.JWT)
-				.body(util.getUserPayload(Constants.USER_ID, dataTable));
+		utilities.getRequestSpecWithIdAndPayload(dataTable);
 	}
 
-	@Given("he\\/she deletes an user using id")
+	@Given("^he/she deletes an user using id$")
 	public void he_she_deletes_an_user_using_id() {
-		requestSpecification = util.getRequestSpec().header("Authorization", Constants.JWT).pathParam("userId",
-				Constants.USER_ID);
+		utilities.getRequestSpecWithAuth();
 	}
-
 }

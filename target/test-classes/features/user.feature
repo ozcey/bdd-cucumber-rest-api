@@ -11,6 +11,9 @@ Feature: Validating User APIs
     When he/she calls "UserAdd" with "POST" request
     Then he/she gets good response "OK"
     And he/she extracts properties from response
+      | id       |
+      | email    |
+      | password |
     And he/she asserts that response has following values
       | Property  | Value |
       | firstName | John  |

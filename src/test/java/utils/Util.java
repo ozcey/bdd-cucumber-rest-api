@@ -91,4 +91,13 @@ public class Util {
 		return Payloads.updateUserPayload(userId, userData.get("firstName"), userData.get("lastName"), userData.get("username"),
 				userData.get("email"), userData.get("password"), "ROLE_USER");
 	}
+	
+    public String getCustomerPayload(DataTable data) {
+        Map<String, String> customerData = data.asMap(String.class, String.class);
+        return Payloads.addCustomerPayload(customerData.get("firstName"),customerData.get("lastName"),
+                customerData.get("email"), customerData.get("password"), customerData.get("phone"),
+                customerData.get("street"), customerData.get("city"), customerData.get("state"),
+                customerData.get("zipcode"), customerData.get("country")
+                );
+    }
 }
