@@ -7,6 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum EndPoints {
 
+	BaseUrl("http://localhost:5000"),
     UserFindAll("/users/findAll"),
     UserFindById("/users/findById/{id}"),
     UserAdd("/users/insert"),

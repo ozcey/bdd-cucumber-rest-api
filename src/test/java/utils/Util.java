@@ -20,7 +20,7 @@ public class Util {
 	public static RequestSpecification requestSpecification;
 
 	public RequestSpecification setRequestSpecification() {
-		requestSpecification = new RequestSpecBuilder().setBaseUri(Constants.BASE_URL)
+		requestSpecification = new RequestSpecBuilder().setBaseUri(EndPoints.valueOf("BaseUrl").getEndPoint())
 				.setContentType(ContentType.JSON).build();
 		return requestSpecification;
 	}

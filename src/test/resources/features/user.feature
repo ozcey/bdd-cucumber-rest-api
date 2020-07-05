@@ -1,5 +1,5 @@
 @RunThis
-Feature: Validating User APIs
+Feature: Validating User Service APIs
 
   Scenario: I want to add an user
     Given he/she adds user payload to request

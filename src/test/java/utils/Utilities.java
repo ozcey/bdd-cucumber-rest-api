@@ -23,7 +23,9 @@ public class Utilities {
 	public static Map<String, Object> properties = new HashMap<>();
 
 	public RequestSpecification setRequestSpecification() {
-		requestSpecification = RestAssured.given().baseUri(Constants.BASE_URL).contentType(ContentType.JSON);
+		requestSpecification = RestAssured.given()
+				.baseUri(EndPoints.valueOf("BaseUrl").getEndPoint())
+				.contentType(ContentType.JSON);
 		return requestSpecification;
 	}
 
@@ -33,7 +35,7 @@ public class Utilities {
 	}
 
 	public void getRequestSpec(DataTable dataTable, String operation) {
-		Map<String, Object> props = getProperties();
+		Map<String, Object> props = getProperties(); 
 
 		switch (operation) {
 		case "POST":
@@ -130,7 +132,7 @@ public class Utilities {
 		return new JsonPath(response.asString()).get(path);
 	}
 
-	public String getUserPayload(DataTable data) {
+	private String getUserPayload(DataTable data) {
 		Map<String, String> userData = data.asMap(String.class, String.class);
 		return Payloads.addUserPayload(userData.get("firstName"), userData.get("lastName"), userData.get("username"),
 				userData.get("email"), userData.get("password"), "ROLE_USER");
