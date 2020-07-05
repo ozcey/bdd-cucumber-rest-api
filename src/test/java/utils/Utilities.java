@@ -7,7 +7,6 @@ import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.springframework.http.HttpStatus;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,59 +30,59 @@ public class Utilities {
 
 	@SuppressWarnings("unchecked")
 	private Map<String, Object> getProperties() {
-		return ((Map<String, Object>) properties.get("properties"));
+		return ((Map<String, Object>) properties.get(Constants.PROPERTIES));
 	}
 
 	public void getRequestSpec(DataTable dataTable, String operation) {
 		Map<String, Object> props = getProperties(); 
 
 		switch (operation) {
-		case "POST":
+		case Constants.POST:
 			requestSpecification = setRequestSpecification().body(getUserPayload(dataTable));
 			break;
-		case "GET":
-			requestSpecification = setRequestSpecification().pathParam("id", (Integer) props.get("id"));
+		case Constants.GET:
+			requestSpecification = setRequestSpecification().pathParam(Constants.ID, (Integer) props.get("id"));
 			break;
-		case "LOGIN":
-			requestSpecification = setRequestSpecification().header("email", props.get("email").toString())
-					.header("password", props.get("password").toString());
+		case Constants.LOGIN:
+			requestSpecification = setRequestSpecification().header(Constants.EMAIL, props.get("email").toString())
+					.header(Constants.PASSWORD, props.get("password").toString());
 			break;
-		case "PUT":
-			requestSpecification = setRequestSpecification().header("Authorization", properties.get("jwt").toString())
+		case Constants.PUT:
+			requestSpecification = setRequestSpecification().header(Constants.AUTHORIZATION, properties.get("jwt").toString())
 					.body(getUpdateUserPayload(dataTable));
 			break;
-		case "DELETE":
-			requestSpecification = setRequestSpecification().header("Authorization", properties.get("jwt").toString())
-					.pathParam("id", (Integer) props.get("id"));
+		case Constants.DELETE:
+			requestSpecification = setRequestSpecification().header(Constants.AUTHORIZATION, properties.get("jwt").toString())
+					.pathParam(Constants.ID, (Integer) props.get("id"));
 			break;
 
 		}
 
-		scenarioParams.put("requestSpecification", requestSpecification);
+		scenarioParams.put(Constants.REQUEST_SPECIFICATION, requestSpecification);
 	}
 
 	public void getResponse(String endPoint, String method) {
-		RequestSpecification requestSpecification = (RequestSpecification) scenarioParams.get("requestSpecification");
+		RequestSpecification requestSpecification = (RequestSpecification) scenarioParams.get(Constants.REQUEST_SPECIFICATION);
 		Response response = null;
 		switch (method) {
-		case "POST":
+		case Constants.POST:
 			response = requestSpecification.when().post(EndPoints.valueOf(endPoint).getEndPoint());
 			break;
-		case "GET":
+		case Constants.GET:
 			response = requestSpecification.when().get(EndPoints.valueOf(endPoint).getEndPoint());
 			break;
-		case "PUT":
+		case Constants.PUT:
 			response = requestSpecification.when().put(EndPoints.valueOf(endPoint).getEndPoint());
 			break;
-		case "DELETE":
+		case Constants.DELETE:
 			response = requestSpecification.when().delete(EndPoints.valueOf(endPoint).getEndPoint());
 			break;
 		}
-		scenarioParams.put("response", response);
+		scenarioParams.put(Constants.RESPONSE, response);
 	}
 
 	public void validateStatus(String status) {
-		Response response = (Response) scenarioParams.get("response");
+		Response response = (Response) scenarioParams.get(Constants.RESPONSE);
 		HttpStatus actualStatus = HttpStatus.valueOf(response.statusCode());
 		HttpStatus expectedlStatus = HttpStatus.valueOf(status);
 		assertEquals(actualStatus, expectedlStatus);
@@ -91,21 +90,21 @@ public class Utilities {
 
 	public void extractProperties(DataTable data) {
 		List<String> propertyList = data.asList();
-		Response response = (Response) scenarioParams.get("response");
+		Response response = (Response) scenarioParams.get(Constants.RESPONSE);
 		Map<String, Object> props = new HashMap<>();
 		for (String prop : propertyList) {
 			props.put(prop, getValFromResponse(response, prop));
 		}
-		properties.put("properties", props);
+		properties.put(Constants.PROPERTIES, props);
 	}
 
 	public void extractProperties(String jwt) {
-		Response response = (Response) scenarioParams.get("response");
+		Response response = (Response) scenarioParams.get(Constants.RESPONSE);
 		properties.put(jwt, getStringValFromResponse(response, jwt));
 	}
 
 	public void validateProperties(DataTable data) {
-		Response response = (Response) scenarioParams.get("response");
+		Response response = (Response) scenarioParams.get(Constants.RESPONSE);
 		List<Map<String, String>> propertyList = data.asMaps(String.class, String.class);
 		for (Map<String, String> prop : propertyList) {
 			String property = prop.get("Property");
@@ -115,7 +114,7 @@ public class Utilities {
 	}
 
 	public void validatePropertyNotNull(DataTable data) {
-		Response response = (Response) scenarioParams.get("response");
+		Response response = (Response) scenarioParams.get(Constants.RESPONSE);
 		List<Map<String, String>> propertyList = data.asMaps(String.class, String.class);
 		for (Map<String, String> prop : propertyList) {
 			String property = prop.get("Property");

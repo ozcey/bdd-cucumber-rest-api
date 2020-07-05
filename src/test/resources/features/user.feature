@@ -1,4 +1,4 @@
-@RunThis
+@RunThis @E2E
 Feature: Validating User Service APIs
 
   Scenario: I want to add an user
