@@ -7,8 +7,9 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="bdd-cucumber-restassured" />
         <module name="bdd-cucumber" />
+        <module name="bdd-cucumber-restAssured" />
+        <module name="bdd-cucumber-restassured" />
       </profile>
     </annotationProcessing>
   </component>

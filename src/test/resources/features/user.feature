@@ -1,4 +1,3 @@
-@run
 Feature: Validating User Service APIs
 
   Scenario: I want to add an user
