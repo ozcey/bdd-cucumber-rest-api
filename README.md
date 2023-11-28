@@ -19,18 +19,3 @@ The project link here [GitHub link](https://github.com/ozcey/bdd-cucumber-rest-a
 ```
 # git clone https://github.com/ozcey/bdd-cucumber-rest-api
 ```
-
-
-## Running App
-
-### Running locally
-* Clone the repository or download the zip file
-* Import the project into IntelliJ IDEA or Eclipse
-* 
-* 
-* 
-* 
-
-```
- mvn spring-boot:run
-```
