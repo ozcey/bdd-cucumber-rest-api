@@ -3,11 +3,13 @@
 ## Getting Started
 
 
-### Prerequisites
+### Technologies
 
 - Java 8+
 - Maven
-- Cucumber 
+- Cucumber
+- Rest Assurred
+- JUnit
 - IntelliJ IDEA or Eclipse
 
 ### Setup
